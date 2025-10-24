@@ -1,3 +1,4 @@
+// Increase performance by disabling these
 p5.disableFriendlyErrors = true;
 let grid
 
@@ -116,7 +117,8 @@ function mouseWheel(event) {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  let mainCanvas = document.getElementById("mainCanvas")
+  createCanvas(windowWidth, windowHeight, mainCanvas);
   
   let gridScale = gridScaleTarget
   let gridSpacing = 1
