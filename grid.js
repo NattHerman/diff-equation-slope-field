@@ -13,17 +13,17 @@ class Grid {
   getPixelPos(x, y) {
     return createVector(
       x * this.scale.x + this.offset.x,
-      y * this.scale.y + this.offset.y
+      -y * this.scale.y + this.offset.y
     )
   }
   
   getWorldPos(x, y) {
     return createVector(
       (x - this.offset.x) / this.scale.x,
-      (y - this.offset.y) / this.scale.y
+      -(y - this.offset.y) / this.scale.y
     )
   }
-  
+
   draw() {
     strokeWeight(1)
     stroke("#707497")
