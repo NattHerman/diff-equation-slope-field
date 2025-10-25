@@ -39,11 +39,11 @@ class Grid {
     
     // Horizontal lines
     for (let y = 0; y < this.count.y / 2; y++) {
-      let verticalPos = y * this.spacing.y * this.scale.y + this.offset.y
+      let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
       line(0, verticalPos, width, verticalPos)
     }
     for (let y = 0; y > -this.count.y / 2; y--) {
-      let verticalPos = y * this.spacing.y * this.scale.y + this.offset.y
+      let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
       line(0, verticalPos, width, verticalPos)
     }
     
