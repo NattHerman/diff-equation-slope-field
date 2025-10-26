@@ -11,7 +11,6 @@ let gridScaleTarget = 50
 
 let equationIndex = 0 
 const diffEquations = [
-	(x, y) => x + y**2,
 	(x, y) => sin(x)**2,
 	(x, y) => sin(y),
 	(x, y) => sin(y) - sin(x),
@@ -21,6 +20,8 @@ const diffEquations = [
 	(x, y) => x - y,
 	(x, y) => x + y,
 	(x, y) => x / y,
+	(x, y) => 2*y / x,
+	(x, y) => x / (-y),
 	(x, y) => x**2 + y**2,
 ]
 
@@ -75,36 +76,37 @@ function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength
 }
 
 function drawDiffEquationGrid(diffEquation, slopeLength, spacing, count) {
-//let h = 0.5
+	//let h = 0.5
 
-strokeWeight(2)
+	strokeWeight(2)
 
-for (let x = -spacing * count / 2; x <= spacing * count / 2; x += spacing) {
-	for (let y = -spacing * count / 2; y <= spacing * count / 2; y += spacing) {
+	for (let x = -spacing * count / 2; x <= spacing * count / 2; x += spacing) {
+		for (let y = -spacing * count / 2; y <= spacing * count / 2; y += spacing) {
 
-		let result = diffEquation(x, y)
+			let result = diffEquation(x, y)
 
-		//let h = sqrt(slopeLength**2 / (1 + (1/(result**2))))
+			//let h = sqrt(slopeLength**2 / (1 + (1/(result**2))))
 
-		let theta = atan(result)
-		let dx = slopeLength * cos(theta)
-		let dy = slopeLength * sin(theta)
+			let theta = atan(result)
+			let dx = slopeLength * cos(theta)
+			let dy = slopeLength * sin(theta)
 
-		let backwardSlopePos = grid.getPixelPos(x + dx, y + dy)
-		let forwardSlopePos = grid.getPixelPos(x - dx, y - dy)
+			let backwardSlopePos = grid.getPixelPos(x + dx, y + dy)
+			let forwardSlopePos = grid.getPixelPos(x - dx, y - dy)
 
-		let p = grid.getPixelPos(x, y)
+			let p = grid.getPixelPos(x, y)
 
 
-		if (result >= 0) {
-			stroke("#53cc51")
-		} else {
-			stroke("#ee7056")
-		}
+			if (result >= 0) {
+				stroke("#53cc51")
+			} else {
+				stroke("#ee7056")
+			}
 
-		//circle(p.x, p.y, 10)
-		line(backwardSlopePos.x, backwardSlopePos.y,
-		   forwardSlopePos.x, forwardSlopePos.y)
+			//circle(p.x, p.y, 10)
+			line(backwardSlopePos.x, backwardSlopePos.y,
+				forwardSlopePos.x, forwardSlopePos.y
+			)
 		}
 	}
 }
@@ -193,6 +195,6 @@ function draw() {
 
 	let initPos = grid.getWorldPos(mouseX, mouseY)
 
-	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, 0.1, 160)
-	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, -0.1, 160)
+	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, 0.1, 1600)
+	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, -0.1, 1600)
 }
