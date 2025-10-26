@@ -192,9 +192,6 @@ function draw() {
 
 	grid.draw()
 
-	let debugPoint = grid.getPixelPos(10, 10)
-	circle(debugPoint.x, debugPoint.y, 10)
-
 	drawDiffEquationGrid(
 		diffEquations[equationIndex],
 		0.1, // length
