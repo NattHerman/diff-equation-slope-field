@@ -116,6 +116,13 @@ function expDecay(a, b, decay, dt) {
 	return b + (a - b) * exp(-decay*dt)
 }
 
+function panGrid(grid) {
+	if (mouseButton == "center" && mouseIsPressed) {
+		let movement = createVector(movedX, movedY)
+		grid.offset.add(movement)
+	}
+}
+
 
 function keyPressed() {
 if (key == " ") {
@@ -180,6 +187,8 @@ function draw() {
 		zoomSmoothingSpeed,
 		deltaTime
 	)
+
+	panGrid(grid)
 
 	grid.draw()
 
