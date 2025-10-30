@@ -1,11 +1,10 @@
 class Grid {
-	constructor(scale, offset, spacing, count) {
+	constructor(scale, offset, spacing) {
 		// gridspace = screenspace / scale
 		this.scale = scale.copy(); // 2d vector
 		// Spacing between the grid lines in x and y direction
 		this.spacing = spacing.copy(); // 2d vector
 
-		this.count = count.copy()
 
 		this.offset = offset.copy()
 		this.zoomTarget
@@ -67,18 +66,6 @@ class Grid {
 			screenY = this.getPixelY(y)
 		}
 
-		/*
-		for (let y = 0; y < this.count.y / 2; y++) {
-			let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
-			line(0, verticalPos, width, verticalPos)
-		}
-		for (let y = 0; y > -this.count.y / 2; y--) {
-			let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
-			line(0, verticalPos, width, verticalPos)
-		}
-		*/
-
-		// x-axis
 		strokeWeight(2)
 		stroke("#4E52A8")
 		let origin = this.getPixelPos(0, 0)
