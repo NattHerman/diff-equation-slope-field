@@ -165,10 +165,9 @@ function setup() {
 	let gridSpacing = 1
 
 	grid = new Grid(
-	createVector(gridScale, gridScale), // scale
-	createVector(width / 2, height / 2), // offset
-	createVector(gridSpacing, gridSpacing), // spacing
-	createVector(width / (gridSpacing * gridScale), height / (gridScale * gridSpacing)) // count
+		createVector(gridScale, gridScale), // scale
+		createVector(width / 2, height / 2), // offset
+		createVector(gridSpacing, gridSpacing), // spacing
 	)
 }
 
