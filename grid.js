@@ -1,13 +1,19 @@
 class Grid {
-	constructor(scale, offset, spacing) {
+	constructor(scale, offset, spacing, minPixelSpace = 30) {
 		// gridspace = screenspace / scale
 		this.scale = scale.copy(); // 2d vector
 		// Spacing between the grid lines in x and y direction
 		this.spacing = spacing.copy(); // 2d vector
 
+		// Minimum number of pixels between lines before the spacing is doubled
+		this.minPixelSpace = minPixelSpace
 
 		this.offset = offset.copy()
 		this.zoomTarget
+
+		this.mainColor = color("#707497")
+		this.secondaryColor = color("#2d2f42")
+		this.highlightColor = color("#4E52A8")
 	}
 
 	getPixelPos(x, y) {
@@ -42,32 +48,44 @@ class Grid {
 
 	draw() {
 		strokeWeight(1)
-		stroke("#707497")
+		stroke(this.mainColor)
+
+		let spacingFactor = 1
+
+		let pixelsBetweenLines = this.spacing.x * this.scale.x
+		while (pixelsBetweenLines < this.minPixelSpace) {
+			spacingFactor *= 2
+
+			pixelsBetweenLines = this.spacing.x * spacingFactor * this.scale.x
+		}
+
 
 		// –– Vertical lines ––
 		// Start at left edge
-		let x = -floor(this.offset.x / (this.spacing.x * this.scale.x));
+		let x = -floor(this.offset.x / (this.spacing.x * this.scale.x * spacingFactor)) * spacingFactor;
+		//if (abs(x % 2) == 1) { x -= 1 } // Prevent x from starting at an odd number
 		let screenX = this.getPixelX(x)
 		while (screenX <= width) {
 			line(screenX, 0, screenX, height)
-
-			x += this.spacing.x
+			
+			x += this.spacing.x * spacingFactor
 			screenX = this.getPixelX(x)
 		}
 
 		// –– Horizontal lines ––
 		// Start at top edge
-		let y = floor(this.offset.y / (this.spacing.y * this.scale.y));
+		let y = floor(this.offset.y / (this.spacing.y * this.scale.y * spacingFactor)) * spacingFactor;
+		//if (abs(y % 2) == 1) { y -= 1 } // Prevent y from starting at an odd number
 		let screenY = this.getPixelY(y)
 		while (screenY <= height) {
 			line(0, screenY, width, screenY)
 
-			y -= this.spacing.y
+			y -= this.spacing.y * spacingFactor
 			screenY = this.getPixelY(y)
 		}
 
 		strokeWeight(2)
-		stroke("#4E52A8")
+		stroke(this.highlightColor)
 		let origin = this.getPixelPos(0, 0)
 		line(0, origin.y, width, origin.y)
 		line(origin.x, 0, origin.x, height)
