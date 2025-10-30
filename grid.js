@@ -8,6 +8,7 @@ class Grid {
 		this.count = count.copy()
 
 		this.offset = offset.copy()
+		this.zoomTarget
 	}
 
 	getPixelPos(x, y) {
@@ -17,6 +18,14 @@ class Grid {
 		)
 	}
 
+	getPixelX(x) {
+		return x * this.scale.x + this.offset.x
+	}
+
+	getPixelY(y) {
+		return -y * this.scale.y + this.offset.y
+	}
+
 	getWorldPos(x, y) {
 		return createVector(
 			(x - this.offset.x) / this.scale.x,
@@ -24,20 +33,41 @@ class Grid {
 		)
 	}
 
+	getWorldX(x) {
+		return (x - this.offset.x) / this.scale.x
+	}
+
+	getWorldY(y) {
+		return -(y - this.offset.y) / this.scale.y
+	}
+
 	draw() {
 		strokeWeight(1)
 		stroke("#707497")
-		// Vertical lines
-		for (let x = 0; x < this.count.x / 2; x ++) {
-			let horizontalPos = x * this.spacing.x * this.scale.x + this.offset.x
-			line(horizontalPos, 0, horizontalPos, height)
-		}
-		for (let x = 0; x > -this.count.x / 2; x --) {
-			let horizontalPos = x * this.spacing.x * this.scale.x + this.offset.x
-			line(horizontalPos, 0, horizontalPos, height)
+
+		// –– Vertical lines ––
+		// Start at left edge
+		let x = -floor(this.offset.x / (this.spacing.x * this.scale.x));
+		let screenX = this.getPixelX(x)
+		while (screenX <= width) {
+			line(screenX, 0, screenX, height)
+
+			x += this.spacing.x
+			screenX = this.getPixelX(x)
 		}
 
-		// Horizontal lines
+		// –– Horizontal lines ––
+		// Start at top edge
+		let y = floor(this.offset.y / (this.spacing.y * this.scale.y));
+		let screenY = this.getPixelY(y)
+		while (screenY <= height) {
+			line(0, screenY, width, screenY)
+
+			y -= this.spacing.y
+			screenY = this.getPixelY(y)
+		}
+
+		/*
 		for (let y = 0; y < this.count.y / 2; y++) {
 			let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
 			line(0, verticalPos, width, verticalPos)
@@ -46,6 +76,7 @@ class Grid {
 			let verticalPos = -y * this.spacing.y * this.scale.y + this.offset.y
 			line(0, verticalPos, width, verticalPos)
 		}
+		*/
 
 		// x-axis
 		strokeWeight(2)
