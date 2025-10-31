@@ -126,7 +126,12 @@ function drawScaleIndicator(x, y, grid) {
 
 	stroke("#36384e")
 	fill("#b6bdef")
-	text(str(round(worldDistance)), x, y - 15)
+	let message = str(round(worldDistance))
+	if (worldDistance < 1) {
+		message = "1/" + str(1/(worldDistance))
+	}
+
+	text(message, x, y - 15)
 	
 }
 
