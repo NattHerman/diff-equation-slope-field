@@ -7,7 +7,6 @@ let grid
 
 let zoomSensitivity = 0.2
 let zoomSmoothingSpeed = 0.02
-let gridScaleTarget = 50
 
 let equationIndex = 0 
 const diffEquations = [
@@ -131,10 +130,6 @@ function drawScaleIndicator(x, y, grid) {
 	
 }
 
-// Better than lerp smoothing
-function expDecay(a, b, decay, dt) {
-	return b + (a - b) * exp(-decay*dt)
-}
 
 function panGrid(grid) {
 	if (mouseButton == "center" && mouseIsPressed) {
@@ -152,21 +147,7 @@ if (key == " ") {
 }
 
 function mouseWheel(event) {
-	gridScaleTarget *= 1 - zoomSensitivity * (event.delta / 100)
-
-	/*
-	if (event.delta > 0) {
-		gridScaleTarget *= 1 - zoomSensitivity * (event.delta / 100)
-		//grid.scale.mult(0.9)
-		//grid.scale.x *= 0.9
-		//grid.scale.y *= 0.9
-	} else {
-		gridScaleTarget *= 1 + zoomSensitivity
-		//grid.scale.mult(1.1)
-		//grid.scale.x *= 1.1
-		//grid.scale.y *= 1.1
-	}
-	*/
+	grid.scaleTarget *= 1 - zoomSensitivity * (event.delta / 100)
 }
 
 // Update canvas size with window resize
@@ -176,6 +157,10 @@ addEventListener("resize", (event) => {
 	resizeTimeout = setTimeout(setup, resizeDelay)
 })
 
+
+
+
+
 function setup() {
 	let mainCanvas = document.getElementById("mainCanvas")
 	createCanvas(windowWidth, windowHeight, mainCanvas);
@@ -184,33 +169,24 @@ function setup() {
 	textAlign(RIGHT)
 	textSize(20)
 
-	let gridScale = gridScaleTarget
+	let gridScale = 50
 	let gridSpacing = 1
 
 	grid = new Grid(
 		createVector(gridScale, gridScale), // scale
 		createVector(width / 2, height / 2), // offset
 		createVector(gridSpacing, gridSpacing), // spacing
+		zoomSmoothingSpeed,
+		15, // Minimum pixel spacing
 	)
 }
 
 function draw() {
 	background("#1d1f2d");
 
-	grid.scale.x = expDecay(
-		grid.scale.x,
-		gridScaleTarget,
-		zoomSmoothingSpeed,
-		deltaTime
-	)
-	grid.scale.y = expDecay(
-		grid.scale.y,
-		gridScaleTarget,
-		zoomSmoothingSpeed,
-		deltaTime
-	)
-
 	panGrid(grid)
+
+	grid.update(deltaTime)
 
 	grid.draw()
 

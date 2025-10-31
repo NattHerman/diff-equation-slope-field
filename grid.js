@@ -1,7 +1,15 @@
+// Better than lerp smoothing
+function expDecay(a, b, decay, dt) {
+	return b + (a - b) * exp(-decay*dt)
+}
+
+
 class Grid {
-	constructor(scale, offset, spacing, minPixelSpace = 15) {
+	constructor(scale, offset, spacing, scaleSpeed, minPixelSpace = 15) {
 		// gridspace = screenspace / scale
 		this.scale = scale.copy(); // 2d vector
+		this.scaleTarget = 50
+		this.scaleSpeed = scaleSpeed
 		// Spacing between the grid lines in x and y direction
 		this.spacing = spacing.copy(); // 2d vector
 
@@ -10,6 +18,8 @@ class Grid {
 		this.spacingFactor = 1
 
 		this.offset = offset.copy()
+
+
 		this.zoomTarget
 
 		//this.mainColor = color("#707497")
@@ -46,6 +56,21 @@ class Grid {
 
 	getWorldY(y) {
 		return -(y - this.offset.y) / this.scale.y
+	}
+
+	update(dt) {
+		this.scale.x = expDecay(
+			this.scale.x,
+			this.scaleTarget,
+			zoomSmoothingSpeed,
+			dt
+		)
+		this.scale.y = expDecay(
+			this.scale.y,
+			this.scaleTarget,
+			zoomSmoothingSpeed,
+			dt
+		)
 	}
 
 	draw() {
