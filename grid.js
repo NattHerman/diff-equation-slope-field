@@ -5,16 +5,18 @@ function expDecay(a, b, decay, dt) {
 
 
 class Grid {
-	constructor(scale, offset, spacing, scaleSpeed, minPixelSpace = 15) {
+	constructor(scale, offset, spacing, scaleInterpolationSpeed, minPixelSpace = 15) {
 		// gridspace = screenspace / scale
 		this.scale = scale.copy(); // 2d vector
 		this.scaleTarget = 50
-		this.scaleSpeed = scaleSpeed
+		this.scaleInterpolationSpeed = scaleInterpolationSpeed
 		// Spacing between the grid lines in x and y direction
 		this.spacing = spacing.copy(); // 2d vector
 
-		// Minimum number of pixels between lines before the spacing is doubled
+		// Minimum number of pixels between lines before the spacing is scaled by a factor
+		this.scalingGrowthFactor = 4
 		this.minPixelSpace = minPixelSpace
+		this.maxPixelSpace = minPixelSpace * this.scalingGrowthFactor
 		this.spacingFactor = 1
 
 		this.offset = offset.copy()
@@ -78,13 +80,24 @@ class Grid {
 		stroke(this.mainColor)
 
 		this.spacingFactor = 1
-
 		let pixelsBetweenLines = this.spacing.x * this.scale.x
-		while (pixelsBetweenLines < this.minPixelSpace) {
-			this.spacingFactor *= 4
 
-			pixelsBetweenLines = this.spacing.x * this.spacingFactor * this.scale.x
+		if (pixelsBetweenLines < this.minPixelSpace) {
+			while (pixelsBetweenLines < this.minPixelSpace) {
+				this.spacingFactor *= this.scalingGrowthFactor
+
+				pixelsBetweenLines = this.spacing.x * this.spacingFactor * this.scale.x
+			}
+
+		} else {
+			while (pixelsBetweenLines > this.maxPixelSpace) {
+				this.spacingFactor /= this.scalingGrowthFactor
+
+				pixelsBetweenLines = this.spacing.x * this.spacingFactor * this.scale.x
+			}
+
 		}
+		
 		
 		// –– Vertical lines ––
 		// Start at left edge
@@ -92,7 +105,7 @@ class Grid {
 		//if (abs(x % 2) == 1) { x -= 1 } // Prevent x from starting at an odd number
 		let screenX = this.getPixelX(x)
 		while (screenX <= width) {
-			if (abs(x/this.spacingFactor % 4) == 0) {
+			if (abs(x/this.spacingFactor % this.scalingGrowthFactor) == 0) {
 				stroke(this.mainColor)
 			} else {
 				stroke(this.secondaryColor)
@@ -110,7 +123,7 @@ class Grid {
 		//if (abs(y % 2) == 1) { y -= 1 } // Prevent y from starting at an odd number
 		let screenY = this.getPixelY(y)
 		while (screenY <= height) {
-			if (abs(y/this.spacingFactor % 4) == 0) {
+			if (abs(y/this.spacingFactor % this.scalingGrowthFactor) == 0) {
 				stroke(this.mainColor)
 			} else {
 				stroke(this.secondaryColor)
