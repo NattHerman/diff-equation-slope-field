@@ -13,6 +13,7 @@ let equationIndex = 0
 const diffEquations = [
 	(x, y) => sin(x)**2,
 	(x, y) => sin(y),
+	(x, y) => cos(x),
 	(x, y) => sin(y) - sin(x),
 	(x, y) => sin(x*y),
 	(x, y) => x,
@@ -32,6 +33,7 @@ function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength
 
 	let p = grid.getPixelPos(x, y)
 
+	// Draw initial position/condition
 	stroke("gray")
 	circle(p.x, p.y, 10)
 
@@ -39,23 +41,6 @@ function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength
 	let prevY = p.y
 
 	stroke(255)
-
-	/*
-	// Draw using a constant step-size in x-direction
-	// Draw in positive direction
-	// stepLength is the length traveled in x-direction
-	for (let i = 0; i < count; i++) {
-		x += stepLength
-		y -= diffEquation(x, y) * stepLength
-
-		let p = grid.getPixelPos(x, y)
-
-		line(p.x, p.y, prevX, prevY)
-
-		prevX = p.x
-		prevY = p.y
-	}
-	*/
 	
 	// Draw in the direction of the slope.
 	// stepLength is the total length traveled per step
@@ -76,26 +61,32 @@ function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength
 }
 
 function drawDiffEquationGrid(diffEquation, slopeLength, spacing, count) {
-	//let h = 0.5
-
 	strokeWeight(2)
 
-	for (let x = -spacing * count / 2; x <= spacing * count / 2; x += spacing) {
-		for (let y = -spacing * count / 2; y <= spacing * count / 2; y += spacing) {
+	let worldSpacing = spacing * grid.spacingFactor
+	// Start at left edge
+	let x = -floor(grid.offset.x / (grid.scale.x * worldSpacing)) * worldSpacing;
+	// let x = -floor(grid.offset.x / (grid.scale.x))
+	let screenX = grid.getPixelX(x)
 
+	while (screenX <= width) {
+		let y = floor(grid.offset.y / (grid.scale.y * worldSpacing)) * worldSpacing;
+		let screenY = grid.getPixelY(y)
+
+		while (screenY <= height) {
 			let result = diffEquation(x, y)
 
 			//let h = sqrt(slopeLength**2 / (1 + (1/(result**2))))
 
 			let theta = atan(result)
-			let dx = slopeLength * cos(theta)
-			let dy = slopeLength * sin(theta)
+			let dx = slopeLength * grid.spacingFactor * cos(theta)
+			let dy = slopeLength * grid.spacingFactor * sin(theta)
 
+			let screenPos = createVector(screenX, screenY)
+			//let backwardSlopePos = createVector(dx, dy).mult(slopeLength).add(screenPos)
 			let backwardSlopePos = grid.getPixelPos(x + dx, y + dy)
+			//let forwardSlopePos = createVector(dx, dy).mult(-slopeLength).add(screenPos)
 			let forwardSlopePos = grid.getPixelPos(x - dx, y - dy)
-
-			let p = grid.getPixelPos(x, y)
-
 
 			if (result >= 0) {
 				stroke("#53cc51")
@@ -103,11 +94,21 @@ function drawDiffEquationGrid(diffEquation, slopeLength, spacing, count) {
 				stroke("#ee7056")
 			}
 
-			//circle(p.x, p.y, 10)
-			line(backwardSlopePos.x, backwardSlopePos.y,
+			line(
+				backwardSlopePos.x, backwardSlopePos.y,
 				forwardSlopePos.x, forwardSlopePos.y
 			)
+			y -= worldSpacing
+			screenY = grid.getPixelY(y)
+
+			if (screenY < -200) {
+				print("uh oh")
+				break
+			}
 		}
+		x += worldSpacing
+		screenX = grid.getPixelX(x)
+		//print(x, screenX, width)
 	}
 }
 
@@ -160,6 +161,7 @@ function setup() {
 	let mainCanvas = document.getElementById("mainCanvas")
 	createCanvas(windowWidth, windowHeight, mainCanvas);
 	background("#1d1f2d");
+	frameRate(240)
 
 	let gridScale = gridScaleTarget
 	let gridSpacing = 1
@@ -194,6 +196,7 @@ function draw() {
 	drawDiffEquationGrid(
 		diffEquations[equationIndex],
 		0.1, // length
+		// 2.5, // length
 		0.5, // spacing
 		20 // count
 	)
