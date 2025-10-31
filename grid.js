@@ -1,5 +1,5 @@
 class Grid {
-	constructor(scale, offset, spacing, minPixelSpace = 30) {
+	constructor(scale, offset, spacing, minPixelSpace = 15) {
 		// gridspace = screenspace / scale
 		this.scale = scale.copy(); // 2d vector
 		// Spacing between the grid lines in x and y direction
@@ -11,8 +11,9 @@ class Grid {
 		this.offset = offset.copy()
 		this.zoomTarget
 
-		this.mainColor = color("#707497")
-		this.secondaryColor = color("#2d2f42")
+		//this.mainColor = color("#707497")
+		this.mainColor = color("#515472")
+		this.secondaryColor = color("#36384e")
 		this.highlightColor = color("#4E52A8")
 	}
 
@@ -54,11 +55,10 @@ class Grid {
 
 		let pixelsBetweenLines = this.spacing.x * this.scale.x
 		while (pixelsBetweenLines < this.minPixelSpace) {
-			spacingFactor *= 2
+			spacingFactor *= 4
 
 			pixelsBetweenLines = this.spacing.x * spacingFactor * this.scale.x
 		}
-
 
 		// –– Vertical lines ––
 		// Start at left edge
@@ -66,6 +66,12 @@ class Grid {
 		//if (abs(x % 2) == 1) { x -= 1 } // Prevent x from starting at an odd number
 		let screenX = this.getPixelX(x)
 		while (screenX <= width) {
+			if (abs(x/spacingFactor % 4) == 0) {
+				stroke(this.mainColor)
+			} else {
+				stroke(this.secondaryColor)
+			}
+
 			line(screenX, 0, screenX, height)
 			
 			x += this.spacing.x * spacingFactor
@@ -78,6 +84,11 @@ class Grid {
 		//if (abs(y % 2) == 1) { y -= 1 } // Prevent y from starting at an odd number
 		let screenY = this.getPixelY(y)
 		while (screenY <= height) {
+			if (abs(y/spacingFactor % 4) == 0) {
+				stroke(this.mainColor)
+			} else {
+				stroke(this.secondaryColor)
+			}
 			line(0, screenY, width, screenY)
 
 			y -= this.spacing.y * spacingFactor
