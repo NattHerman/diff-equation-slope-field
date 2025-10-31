@@ -7,6 +7,7 @@ class Grid {
 
 		// Minimum number of pixels between lines before the spacing is doubled
 		this.minPixelSpace = minPixelSpace
+		this.spacingFactor = 1
 
 		this.offset = offset.copy()
 		this.zoomTarget
@@ -51,22 +52,22 @@ class Grid {
 		strokeWeight(1)
 		stroke(this.mainColor)
 
-		let spacingFactor = 1
+		this.spacingFactor = 1
 
 		let pixelsBetweenLines = this.spacing.x * this.scale.x
 		while (pixelsBetweenLines < this.minPixelSpace) {
-			spacingFactor *= 4
+			this.spacingFactor *= 4
 
-			pixelsBetweenLines = this.spacing.x * spacingFactor * this.scale.x
+			pixelsBetweenLines = this.spacing.x * this.spacingFactor * this.scale.x
 		}
-
+		
 		// –– Vertical lines ––
 		// Start at left edge
-		let x = -floor(this.offset.x / (this.spacing.x * this.scale.x * spacingFactor)) * spacingFactor;
+		let x = -floor(this.offset.x / (this.spacing.x * this.scale.x * this.spacingFactor)) * this.spacingFactor * this.spacing.x;
 		//if (abs(x % 2) == 1) { x -= 1 } // Prevent x from starting at an odd number
 		let screenX = this.getPixelX(x)
 		while (screenX <= width) {
-			if (abs(x/spacingFactor % 4) == 0) {
+			if (abs(x/this.spacingFactor % 4) == 0) {
 				stroke(this.mainColor)
 			} else {
 				stroke(this.secondaryColor)
@@ -74,24 +75,24 @@ class Grid {
 
 			line(screenX, 0, screenX, height)
 			
-			x += this.spacing.x * spacingFactor
+			x += this.spacing.x * this.spacingFactor
 			screenX = this.getPixelX(x)
 		}
 
 		// –– Horizontal lines ––
 		// Start at top edge
-		let y = floor(this.offset.y / (this.spacing.y * this.scale.y * spacingFactor)) * spacingFactor;
+		let y = floor(this.offset.y / (this.spacing.y * this.scale.y * this.spacingFactor)) * this.spacingFactor * this.spacing.x;
 		//if (abs(y % 2) == 1) { y -= 1 } // Prevent y from starting at an odd number
 		let screenY = this.getPixelY(y)
 		while (screenY <= height) {
-			if (abs(y/spacingFactor % 4) == 0) {
+			if (abs(y/this.spacingFactor % 4) == 0) {
 				stroke(this.mainColor)
 			} else {
 				stroke(this.secondaryColor)
 			}
 			line(0, screenY, width, screenY)
 
-			y -= this.spacing.y * spacingFactor
+			y -= this.spacing.y * this.spacingFactor
 			screenY = this.getPixelY(y)
 		}
 
@@ -102,4 +103,3 @@ class Grid {
 		line(origin.x, 0, origin.x, height)
 	}
 }
-
