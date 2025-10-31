@@ -112,6 +112,25 @@ function drawDiffEquationGrid(diffEquation, slopeLength, spacing, count) {
 	}
 }
 
+function drawScaleIndicator(x, y, grid) {
+	stroke("#b6bdef")
+	strokeWeight(3)
+	line(
+		x, y,
+		x - grid.scale.x * grid.spacing.x * grid.spacingFactor,
+		y
+	)
+
+	// Write how long the indicator is
+	let worldDistance = grid.spacing.x * grid.spacingFactor
+	//print(worldDistance)
+
+	stroke("#36384e")
+	fill("#b6bdef")
+	text(str(round(worldDistance)), x, y - 15)
+	
+}
+
 // Better than lerp smoothing
 function expDecay(a, b, decay, dt) {
 	return b + (a - b) * exp(-decay*dt)
@@ -162,6 +181,8 @@ function setup() {
 	createCanvas(windowWidth, windowHeight, mainCanvas);
 	background("#1d1f2d");
 	frameRate(240)
+	textAlign(RIGHT)
+	textSize(20)
 
 	let gridScale = gridScaleTarget
 	let gridSpacing = 1
@@ -205,4 +226,6 @@ function draw() {
 
 	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, 0.1, 1600)
 	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, -0.1, 1600)
+
+	drawScaleIndicator(width - 50, height - 50, grid)
 }
