@@ -25,6 +25,9 @@ const diffEquations = [
 	(x, y) => x**2 + y**2,
 ]
 
+// Options available through GUI
+let displaySlopeField = true
+
 
 function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength, count) {
 	let x = initialPoint.x
@@ -39,7 +42,7 @@ function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength
 	let prevX = p.x
 	let prevY = p.y
 
-	stroke(255)
+	stroke(245)
 	
 	// Draw in the direction of the slope.
 	// stepLength is the total length traveled per step
@@ -64,12 +67,12 @@ function drawDiffEquationGrid(diffEquation, slopeLength, spacing, count) {
 
 	let worldSpacing = spacing * grid.spacingFactor
 	// Start at left edge
-	let x = -floor(grid.offset.x / (grid.scale.x * worldSpacing)) * worldSpacing;
+	let x = -floor(0.5 + grid.offset.x / (grid.scale.x * worldSpacing)) * worldSpacing;
 	// let x = -floor(grid.offset.x / (grid.scale.x))
 	let screenX = grid.getPixelX(x)
 
 	while (screenX <= width) {
-		let y = floor(grid.offset.y / (grid.scale.y * worldSpacing)) * worldSpacing;
+		let y = floor(0.5 + grid.offset.y / (grid.scale.y * worldSpacing)) * worldSpacing;
 		let screenY = grid.getPixelY(y)
 
 		while (screenY <= height) {
@@ -164,10 +167,6 @@ addEventListener("resize", (event) => {
 	resizeTimeout = setTimeout(setup, resizeDelay)
 })
 
-
-
-
-
 function setup() {
 	let mainCanvas = document.getElementById("mainCanvas")
 	createCanvas(windowWidth, windowHeight, mainCanvas);
@@ -197,13 +196,15 @@ function draw() {
 
 	grid.draw()
 
-	drawDiffEquationGrid(
-		diffEquations[equationIndex],
-		0.1, // length
-		// 2.5, // length
-		0.5, // spacing
-		20 // count
-	)
+	if (displaySlopeField){
+		drawDiffEquationGrid(
+			diffEquations[equationIndex],
+			0.1, // length
+			// 2.5, // length
+			0.5, // spacing
+			20 // count
+		)
+	}
 
 	let initPos = grid.getWorldPos(mouseX, mouseY)
 

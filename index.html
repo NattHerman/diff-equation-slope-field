@@ -2,18 +2,29 @@
 <html>
 
 <head>
-	<title>Diff Equation Slopes</title>
+	<title>Differential Equation Slope Fiel</title>
 	<script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
+	<canvas id="mainCanvas"></canvas>
 	<main>
-		<canvas id="mainCanvas"></canvas>
+		<div id="base">
+		<form name="options" id="options">
+		<menu>
+			<li>
+				<span class="option-name">Slope Field</span>
+				<input class="option-checkbox" type="checkbox" name="slope-field">
+			</li>
+		</menu>
+		</form>
+		</div>
 	</main>
 
 	<script src="grid.js"></script>
 	<script src="sketch.js"></script>
+	<script src="options.js"></script>
 </body>
 
 </html>

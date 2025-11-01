@@ -1,8 +1,49 @@
+:root {
+  --main-bg-color: #1d1f2d;
+  --secondary-bg-color: #2c2f42b3;
+  --light-detail-color: #4E52A8;
+  --dark-detail-color: #36384e;
+  --text-color: #a9b2eb;
+  --option-height: 30px;
+}
 html, body {
 	margin: 0;
 	padding: 0;
-	background-color: #1d1f2d;
+	background-color: var(--main-bg-color);
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 canvas {
 	display: block;
+	position:absolute;
+	left:0;
+	top:0;
+	z-index:-1;
+}
+#base{
+	position:absolute;
+	z-index:0;
+} 
+
+/* Options menu */
+menu {
+  list-style: none;
+  background-color: var(--secondary-bg-color);
+  margin: 20px;
+  padding: 5px;
+  padding-top: 0px;
+  border-radius: 15px;
+}
+li {
+  padding: 4px;
+}
+.option-name {
+  color: var(--text-color);
+  font-size: var(--option-height);
+}
+.option-checkbox {
+  width: calc(var(--option-height) - 10px);
+  height: calc(var(--option-height) - 10px);
+  accent-color: var(--light-detail-color);
+  background-color: var(--dark-detail-color);
+  margin-left: 9px;
 }
