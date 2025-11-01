@@ -10,26 +10,24 @@ let zoomSmoothingSpeed = 0.02
 
 let equationIndex = 0 
 const diffEquations = [
-	(x, y) => sin(x)**2,
-	(x, y) => sin(y),
-	(x, y) => cos(x),
-	(x, y) => sin(y) - sin(x),
-	(x, y) => sin(x*y),
 	(x, y) => x,
+	(x, y) => 1/x,
 	(x, y) => x * y,
 	(x, y) => x - y,
 	(x, y) => x + y,
 	(x, y) => x / y,
-	(x, y) => 2*y / x,
 	(x, y) => x / (-y),
 	(x, y) => x**2 + y**2,
+	(x, y) => sin(y),
+	(x, y) => sin(y) - sin(x),
+	(x, y) => sin(x*y),
 ]
 
 // Options available through GUI
 let displaySlopeField = true
+let displayIVPPath = true
 
-
-function drawDiffEquationInitialCondition(diffEquation, initialPoint, stepLength, count) {
+function drawDiffEquationIVP(diffEquation, initialPoint, stepLength, count) {
 	let x = initialPoint.x
 	let y = initialPoint.y
 
@@ -208,8 +206,9 @@ function draw() {
 
 	let initPos = grid.getWorldPos(mouseX, mouseY)
 
-	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, 0.1, 1600)
-	drawDiffEquationInitialCondition(diffEquations[equationIndex], initPos, -0.1, 1600)
-
+	if (displayIVPPath) {
+		drawDiffEquationIVP(diffEquations[equationIndex], initPos, 0.1, 1600)
+		drawDiffEquationIVP(diffEquations[equationIndex], initPos, -0.1, 1600)
+	}
 	drawScaleIndicator(width - 50, height - 50, grid)
 }
