@@ -75,6 +75,15 @@ class Grid {
 		)
 	}
 
+	nonFiniteCrashout(riskyValue) {
+		if (!isFinite(riskyValue)) {
+			this.scale.x = 1
+			this.scale.y = 1
+			this.scaleTarget = 1
+			console.warn("Value reached infinity")
+		}
+	}
+
 	draw() {
 		strokeWeight(1)
 		stroke(this.mainColor)
@@ -85,6 +94,9 @@ class Grid {
 		if (pixelsBetweenLines < this.minPixelSpace) {
 			while (pixelsBetweenLines < this.minPixelSpace) {
 				this.spacingFactor *= this.scalingGrowthFactor
+
+				// Dont poop pants at big numbers
+				this.nonFiniteCrashout(pixelsBetweenLines)
 
 				pixelsBetweenLines = this.spacing.x * this.spacingFactor * this.scale.x
 			}
